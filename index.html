@@ -521,21 +521,40 @@ button.task span {
     }
 
    function submitPoints() {
-  const formData = new FormData();
+  if (!state.profileSaved) {
+    alert("Save your profile first.");
+    return;
+  }
 
-  formData.append("team", "TEST");
-  formData.append("member", "TEST");
-  formData.append("task", "TEST");
-  formData.append("points", 10);
-  formData.append("note", "TEST");
-  formData.append("date", "2026-01-01");
+  if (!state.selectedTasks.length) {
+    alert("Select at least one task.");
+    return;
+  }
 
-  fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
-    method: "POST",
-    body: formData
+  const note = document.getElementById("note")?.value || "";
+
+  state.selectedTasks.forEach(task => {
+    const formData = new FormData();
+
+    formData.append("team", currentTeam().name);
+    formData.append("member", state.selectedMember);
+    formData.append("task", task);
+
+    const taskPoints = tasks.find(t => t[0] === task)?.[1] || 0;
+    formData.append("points", taskPoints);
+
+    formData.append("note", note);
+    formData.append("date", new Date().toISOString().slice(0,10));
+
+    fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
+      method: "POST",
+      body: formData
+    });
   });
 
-  alert("sent");
+  alert("Submitted!");
+  state.selectedTasks = [];
+  render();
 }
 
     function saveProfile() {
