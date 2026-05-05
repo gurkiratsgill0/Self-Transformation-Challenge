@@ -521,16 +521,18 @@ button.task span {
     }
 
    function submitPoints() {
+  const formData = new FormData();
+
+  formData.append("team", "TEST");
+  formData.append("member", "TEST");
+  formData.append("task", "TEST");
+  formData.append("points", 10);
+  formData.append("note", "TEST");
+  formData.append("date", "2026-01-01");
+
   fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
     method: "POST",
-    body: JSON.stringify({
-      team: "TEST",
-      member: "TEST",
-      task: "TEST",
-      points: 10,
-      note: "TEST",
-      date: "2026-01-01"
-    })
+    body: formData
   });
 
   alert("sent");
