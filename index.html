@@ -540,12 +540,26 @@ button.task span {
       body: formData
     });
   });
+  // instant UI update (fake it locally first)
+state.selectedTasks.forEach(task => {
+  state.logs.push({
+    id: Date.now(),
+    teamId: currentTeam().id,
+    member: state.selectedMember,
+    task: task,
+    points: tasks.find(t => t[0] === task)?.[1] || 0,
+    note: note,
+    date: new Date().toISOString().slice(0,10)
+  });
+});
 
-  alert("Submitted!");
-  state.selectedTasks = [];
+state.selectedTasks = [];
 
-  // 🔥 ADD THIS:
-  setTimeout(() => loadFromSheet(), 10); // wait 1s then refresh from sheet
+// 🔥 instantly update screen
+render();
+
+// 🔁 silently sync with sheet (no delay visible)
+setTimeout(() => loadFromSheet(), 300);
 }
 
     function saveProfile() {
