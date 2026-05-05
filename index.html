@@ -949,7 +949,25 @@ button.task span {
       `;
     }
 
-    render();
+    async function loadFromSheet() {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec");
+  const data = await res.json();
+
+  const rows = data.slice(1);
+
+  state.logs = rows.map((r, i) => ({
+    id: i,
+    teamId: state.teams.find(t => t.name === r[0])?.id,
+    member: r[1],
+    task: r[2],
+    points: Number(r[3]),
+    note: r[4],
+    date: r[5]
+  }));
+
+  render();
+}
+    loadFromSheet();
   </script>
   <!-- update -->
 </body>
