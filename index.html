@@ -521,28 +521,17 @@ button.task span {
     }
 
    function submitPoints() {
-  if (!state.profileSaved) {
-    alert("Save your profile first.");
-    return;
-  }
-
-  if (!state.selectedTasks.length) {
-    alert("Select at least one task.");
-    return;
-  }
+  if (!state.profileSaved) return alert("Save your profile first.");
+  if (!state.selectedTasks.length) return alert("Select at least one task.");
 
   const note = document.getElementById("note")?.value || "";
 
   state.selectedTasks.forEach(task => {
     const formData = new FormData();
-
     formData.append("team", currentTeam().name);
     formData.append("member", state.selectedMember);
     formData.append("task", task);
-
-    const taskPoints = tasks.find(t => t[0] === task)?.[1] || 0;
-    formData.append("points", taskPoints);
-
+    formData.append("points", tasks.find(t => t[0] === task)?.[1] || 0);
     formData.append("note", note);
     formData.append("date", new Date().toISOString().slice(0,10));
 
@@ -554,7 +543,9 @@ button.task span {
 
   alert("Submitted!");
   state.selectedTasks = [];
-  render();
+
+  // 🔥 ADD THIS:
+  setTimeout(() => loadFromSheet(), 1000); // wait 1s then refresh from sheet
 }
 
     function saveProfile() {
