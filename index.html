@@ -499,13 +499,16 @@ button.task span {
   return d.toISOString().slice(0, 10);
 };
 
-    function save() {
-      localStorage.setItem("hklTeams", JSON.stringify(state.teams));
-      localStorage.setItem("hklLogs", JSON.stringify(state.logs));
-      localStorage.setItem("hklSelectedTeam", state.selectedTeam);
-      localStorage.setItem("hklSelectedMember", state.selectedMember);
-      localStorage.setItem("hklProfileSaved", state.profileSaved);
-    }
+    function saveTeamsToSheet() {
+  const formData = new FormData();
+  formData.append("type", "teams");
+  formData.append("teams", JSON.stringify(state.teams));
+
+  fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
+    method: "POST",
+    body: formData
+  });
+}
 
     function teamName(id) {
       return state.teams.find(t => t.id === id)?.name || "Unknown";
@@ -657,30 +660,36 @@ setTimeout(() => loadFromSheet(), 100);
     }
 
     function addTeam() {
-      if (!state.isAdmin) return;
-      const name = document.getElementById("newTeamName").value.trim();
-      const members = document.getElementById("newMembers").value.split(",").map(x => x.trim()).filter(Boolean);
-      if (!name) return;
-      state.teams.push({ id: Date.now(), name, members: members.length ? members : ["Member not added"] });
-      save();
-      render();
-    }
+  if (!state.isAdmin) return;
+  const name = document.getElementById("newTeamName").value.trim();
+  const members = document.getElementById("newMembers").value.split(",").map(x => x.trim()).filter(Boolean);
+  if (!name) return;
+
+  state.teams.push({ id: Date.now(), name, members: members.length ? members : ["Member not added"] });
+
+  saveTeamsToSheet();
+  render();
+}
 
     function deleteTeam(id) {
-      if (!state.isAdmin) return;
-      state.teams = state.teams.filter(t => t.id !== id);
-      state.logs = state.logs.filter(l => l.teamId !== id);
-      save();
-      render();
-    }
+  if (!state.isAdmin) return;
+
+  state.teams = state.teams.filter(t => t.id !== id);
+
+  saveTeamsToSheet();
+  render();
+}
 
     function deleteMember(teamId, member) {
-      if (!state.isAdmin) return;
-      state.teams = state.teams.map(t => t.id === teamId ? { ...t, members: t.members.filter(m => m !== member) } : t);
-      state.logs = state.logs.filter(l => !(l.teamId === teamId && l.member === member));
-      save();
-      render();
-    }
+  if (!state.isAdmin) return;
+
+  state.teams = state.teams.map(t =>
+    t.id === teamId ? { ...t, members: t.members.filter(m => m !== member) } : t
+  );
+
+  saveTeamsToSheet();
+  render();
+}
 
     function deleteLog(id) {
       if (!state.isAdmin) return;
@@ -1025,9 +1034,15 @@ setTimeout(() => loadFromSheet(), 100);
   const res = await fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec");
   const data = await res.json();
 
-  const rows = data.slice(1);
+  const teamRows = data.teams.slice(1);
+  state.teams = teamRows.map((r, i) => ({
+    id: i + 1,
+    name: r[0],
+    members: String(r[1]).split(",").map(x => x.trim()).filter(Boolean)
+  }));
 
-  state.logs = rows.map((r, i) => ({
+  const logRows = data.logs.slice(1);
+  state.logs = logRows.map((r, i) => ({
     id: i,
     teamId: state.teams.find(t => t.name === r[0])?.id,
     member: r[1],
