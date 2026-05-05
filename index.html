@@ -347,6 +347,29 @@
     }
 
     @media (max-width: 900px) {
+      /* FINAL MOBILE TASK TEXT FIX */
+.task,
+.task span,
+.task.active,
+.task.active span,
+button.task,
+button.task span {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.task span:first-child,
+.task span:last-child,
+.task.active span:first-child,
+.task.active span:last-child {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.task.active {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
       .app { display: block; }
       .sidebar { display: none; }
       .main { padding: 18px; }
