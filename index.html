@@ -396,6 +396,49 @@ button.task span {
       }
       .team-manager.open { grid-template-columns: 1fr; }
     }
+  .task {
+  min-height: 64px;
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-weight: 700;
+  color: #111827 !important;
+  gap: 12px;
+}
+
+.task::before {
+  content: "✦";
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #f1f5f9;
+  display: grid;
+  place-items: center;
+  margin-right: 14px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.task span:first-child {
+  flex: 1;
+}
+
+.task.active {
+  background: #07111f !important;
+  border-color: #07111f !important;
+}
+
+.task.active span,
+.task.active span:first-child,
+.task.active span:last-child {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+.task.active::before {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+  
   </style>
 </head>
 
@@ -445,7 +488,11 @@ button.task span {
       search: "",
     };
 
-    const today = () => new Date().toISOString().slice(0, 10);
+    const today = () => {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+};
 
     function save() {
       localStorage.setItem("hklTeams", JSON.stringify(state.teams));
@@ -967,7 +1014,7 @@ setTimeout(() => loadFromSheet(), 100);
     task: r[2],
     points: Number(r[3]),
     note: r[4],
-    date: r[5]
+    date: String(r[5]).slice(0, 10)
   }));
 
   render();
