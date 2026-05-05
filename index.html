@@ -521,30 +521,27 @@ button.task span {
     }
 
     function submitPoints() {
-      if (!state.profileSaved) return alert("Save your profile first.");
-      if (!state.selectedTasks.length) return alert("Select at least one task.");
+  if (!state.profileSaved) return alert("Save your profile first.");
+  if (!state.selectedTasks.length) return alert("Select at least one task.");
 
-      const manual = document.getElementById("manualPoints")?.value;
-      const note = document.getElementById("note")?.value || "No note added";
+  const note = document.getElementById("note")?.value || "";
 
-      const newLogs = state.selectedTasks.map((task, i) => {
-        const taskPoints = tasks.find(t => t[0] === task)[1];
-        return {
-          id: Date.now() + i,
-          teamId: Number(state.selectedTeam),
-          member: state.selectedMember,
-          task,
-          points: state.isAdmin && manual ? Number(manual) : taskPoints,
-          note,
-          date: today(),
-        };
-      });
+  state.selectedTasks.forEach(task => {
+    fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
+      method: "POST",
+      body: JSON.stringify({
+        team: currentTeam().name,
+        member: state.selectedMember,
+        task: task,
+        points: tasks.find(t => t[0] === task)[1],
+        note: note,
+        date: new Date().toISOString().slice(0,10)
+      })
+    });
+  });
 
-      state.logs = [...newLogs, ...state.logs];
-      state.selectedTasks = [];
-      save();
-      render();
-    }
+  alert("Submitted!");
+}
 
     function saveProfile() {
       state.profileSaved = true;
