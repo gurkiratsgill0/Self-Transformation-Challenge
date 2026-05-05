@@ -668,7 +668,10 @@ setTimeout(() => loadFromSheet(), 100);
   state.teams.push({ id: Date.now(), name, members: members.length ? members : ["Member not added"] });
 
   saveTeamsToSheet();
-  render();
+save();
+render();
+
+setTimeout(() => loadFromSheet(), 800);
 }
 
     function deleteTeam(id) {
@@ -677,7 +680,10 @@ setTimeout(() => loadFromSheet(), 100);
   state.teams = state.teams.filter(t => t.id !== id);
 
   saveTeamsToSheet();
-  render();
+save();
+render();
+
+setTimeout(() => loadFromSheet(), 800);
 }
 
     function deleteMember(teamId, member) {
@@ -688,7 +694,10 @@ setTimeout(() => loadFromSheet(), 100);
   );
 
   saveTeamsToSheet();
-  render();
+save();
+render();
+
+setTimeout(() => loadFromSheet(), 800);
 }
 
     function deleteLog(id) {
