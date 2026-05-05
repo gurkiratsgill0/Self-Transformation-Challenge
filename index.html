@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HKL Transformation Challenge</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f5f7fa;
+      color: #111827;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      display: grid;
+      min-height: 100vh;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar {
+      background: #07111f;
+      color: white;
+      padding: 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: #d7e3f5;
+      color: #07111f;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .nav button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      text-align: left;
+      padding: 13px 14px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+
+    .nav button:hover, .nav .active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .side-card {
+      margin-top: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .side-card small { color: #94a3b8; text-transform: uppercase; letter-spacing: .15em; }
+    .side-card h2 { font-size: 36px; margin: 12px 0 4px; }
+
+    .main {
+      padding: 32px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 8px 0;
+      font-size: 44px;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .muted { color: #64748b; font-size: 14px; line-height: 1.6; }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .btn-dark { background: #07111f; color: white; }
+    .btn-blue { background: #315cff; color: white; }
+    .btn-light { background: white; border: 1px solid #e2e8f0; color: #334155; }
+    .btn-red { color: #dc2626; background: transparent; border: 0; font-weight: 700; }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      box-shadow: 0 10px 40px rgba(15,23,42,.06);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .panel-body { padding: 24px; }
+    .accent { height: 4px; background: linear-gradient(90deg, #315cff, #4f7cff, #6fa3ff); }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      border-color: #315cff;
+      box-shadow: 0 0 0 4px rgba(49,92,255,.1);
+    }
+
+    input:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+    }
+
+    .profile-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: #07111f;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .task {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 14px;
+      padding: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .task.active {
+      background: #07111f;
+      color: white;
+      border-color: #07111f;
+    }
+
+    .task span:last-child { color: #315cff; font-weight: 800; }
+    .task.active span:last-child { color: white; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #64748b;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 13px 20px;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-top: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+
+    .rank {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .rank.gold { background: #f4e7c5; color: #7a5516; }
+    .rank.silver { background: #e6e8ec; color: #4b5563; }
+    .rank.bronze { background: #ecd7c4; color: #7c3f1d; }
+
+    .bar {
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+      width: 140px;
+    }
+
+    .fill {
+      height: 100%;
+      background: #315cff;
+      border-radius: 999px;
+    }
+
+    .summary {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 24px;
+    }
+
+    .stat-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mobile-cards { display: none; }
+
+    .member-grid {
+      margin-top: 24px;
+    }
+
+    .admin-trigger-mobile {
+      display: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(7,17,31,.72);
+      backdrop-filter: blur(6px);
+      z-index: 50;
+      padding: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-box {
+      width: min(1100px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.3);
+    }
+
+    .modal-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-content { padding: 24px; }
+
+    .team-manager {
+      display: none;
+      margin-top: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .team-manager.open { display: grid; }
+
+    .team-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin: 4px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .app { display: block; }
+      .sidebar { display: none; }
+      .main { padding: 18px; }
+      h1 { font-size: 34px; }
+      .topbar { display: block; }
+      .top-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 8px;
+      }
+      .admin-trigger-mobile { display: inline-flex; }
+      .grid-main, .summary { grid-template-columns: 1fr; }
+      .desktop-table { display: none; }
+      .mobile-cards {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+      }
+      .mobile-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 16px;
+        background: white;
+      }
+      .team-manager.open { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script>
+    const ADMIN_CODE = "hkladmin";
+
+    const tasks = [
+      ["Wake up for Simran", 10],
+      ["Daily pledge", 5],
+      ["Exercise for 45 minutes", 15],
+      ["Sit with yourself for 10 minutes", 10],
+      ["Japji Sahib", 15],
+      ["Bring new friend to HKL", 30],
+      ["Small kindness act", 5],
+      ["Medium kindness act", 15],
+      ["Big kindness act", 30],
+    ];
+
+    const defaultTeams = [
+      { id: 1, name: "Alpha", members: ["Gurkirat", "Member B"] },
+      { id: 2, name: "Beta", members: ["Member C", "Member D"] },
+      { id: 3, name: "Gamma", members: ["Member E", "Member F"] },
+    ];
+
+    const defaultLogs = [
+      { id: 1, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 1", date: "2026-05-01" },
+      { id: 2, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 2", date: "2026-05-02" },
+      { id: 3, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 3", date: "2026-05-03" },
+      { id: 4, teamId: 1, member: "Gurkirat", task: "Exercise for 45 minutes", points: 15, note: "Gym", date: "2026-05-04" },
+      { id: 5, teamId: 2, member: "Member C", task: "Exercise for 45 minutes", points: 15, note: "Workout", date: "2026-05-04" },
+    ];
+
+    let state = {
+      teams: JSON.parse(localStorage.getItem("hklTeams")) || defaultTeams,
+      logs: JSON.parse(localStorage.getItem("hklLogs")) || defaultLogs,
+      isAdmin: false,
+      selectedTeam: Number(localStorage.getItem("hklSelectedTeam")) || 1,
+      selectedMember: localStorage.getItem("hklSelectedMember") || "Gurkirat",
+      profileSaved: localStorage.getItem("hklProfileSaved") === "true",
+      selectedTasks: [],
+      showHistory: false,
+      showAdmin: false,
+      showTeamManager: false,
+      search: "",
+    };
+
+    const today = () => new Date().toISOString().slice(0, 10);
+
+    function save() {
+      localStorage.setItem("hklTeams", JSON.stringify(state.teams));
+      localStorage.setItem("hklLogs", JSON.stringify(state.logs));
+      localStorage.setItem("hklSelectedTeam", state.selectedTeam);
+      localStorage.setItem("hklSelectedMember", state.selectedMember);
+      localStorage.setItem("hklProfileSaved", state.profileSaved);
+    }
+
+    function teamName(id) {
+      return state.teams.find(t => t.id === id)?.name || "Unknown";
+    }
+
+    function currentTeam() {
+      return state.teams.find(t => t.id === Number(state.selectedTeam)) || state.teams[0];
+    }
+
+    function initials(name) {
+      return name.split(" ").map(x => x[0]).join("").slice(0,2).toUpperCase();
+    }
+
+    function getStreak(member, taskName) {
+      const dates = new Set(state.logs.filter(l => l.member === member && l.task === taskName).map(l => l.date));
+      let streak = 0;
+      const d = new Date(today() + "T00:00:00");
+      while (dates.has(d.toISOString().slice(0,10))) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function memberStats() {
+      return state.teams.flatMap(team =>
+        team.members.map(member => {
+          const logs = state.logs.filter(l => l.teamId === team.id && l.member === member);
+          return {
+            member,
+            teamId: team.id,
+            teamName: team.name,
+            total: logs.reduce((s,l) => s + l.points, 0),
+            today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
+            simran: getStreak(member, "Wake up for Simran"),
+            exercise: getStreak(member, "Exercise for 45 minutes"),
+          };
+        })
+      ).sort((a,b) => b.total - a.total);
+    }
+
+    function leaderboard() {
+      return state.teams.map(team => {
+        const logs = state.logs.filter(l => l.teamId === team.id);
+        return {
+          ...team,
+          total: logs.reduce((s,l) => s + l.points, 0),
+          today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
+        };
+      }).sort((a,b) => b.total - a.total);
+    }
+
+    function rankClass(i) {
+      if (i === 0) return "rank gold";
+      if (i === 1) return "rank silver";
+      if (i === 2) return "rank bronze";
+      return "rank";
+    }
+
+    function toggleTask(name) {
+      state.selectedTasks = state.selectedTasks.includes(name)
+        ? state.selectedTasks.filter(t => t !== name)
+        : [...state.selectedTasks, name];
+      render();
+    }
+
+    function submitPoints() {
+      if (!state.profileSaved) return alert("Save your profile first.");
+      if (!state.selectedTasks.length) return alert("Select at least one task.");
+
+      const manual = document.getElementById("manualPoints")?.value;
+      const note = document.getElementById("note")?.value || "No note added";
+
+      const newLogs = state.selectedTasks.map((task, i) => {
+        const taskPoints = tasks.find(t => t[0] === task)[1];
+        return {
+          id: Date.now() + i,
+          teamId: Number(state.selectedTeam),
+          member: state.selectedMember,
+          task,
+          points: state.isAdmin && manual ? Number(manual) : taskPoints,
+          note,
+          date: today(),
+        };
+      });
+
+      state.logs = [...newLogs, ...state.logs];
+      state.selectedTasks = [];
+      save();
+      render();
+    }
+
+    function saveProfile() {
+      state.profileSaved = true;
+      save();
+      render();
+    }
+
+    function changeProfile() {
+      state.profileSaved = false;
+      save();
+      render();
+    }
+
+    function openHistory() {
+      state.showHistory = true;
+      render();
+    }
+
+    function closeHistory() {
+      state.showHistory = false;
+      render();
+    }
+
+    function openAdmin() {
+      state.showAdmin = true;
+      render();
+    }
+
+    function closeAdmin() {
+      state.showAdmin = false;
+      render();
+    }
+
+    function loginAdmin() {
+      const code = document.getElementById("adminCode")?.value;
+      if (code === ADMIN_CODE) {
+        state.isAdmin = true;
+        render();
+      } else {
+        alert("Wrong admin code.");
+      }
+    }
+
+    function addTeam() {
+      if (!state.isAdmin) return;
+      const name = document.getElementById("newTeamName").value.trim();
+      const members = document.getElementById("newMembers").value.split(",").map(x => x.trim()).filter(Boolean);
+      if (!name) return;
+      state.teams.push({ id: Date.now(), name, members: members.length ? members : ["Member not added"] });
+      save();
+      render();
+    }
+
+    function deleteTeam(id) {
+      if (!state.isAdmin) return;
+      state.teams = state.teams.filter(t => t.id !== id);
+      state.logs = state.logs.filter(l => l.teamId !== id);
+      save();
+      render();
+    }
+
+    function deleteMember(teamId, member) {
+      if (!state.isAdmin) return;
+      state.teams = state.teams.map(t => t.id === teamId ? { ...t, members: t.members.filter(m => m !== member) } : t);
+      state.logs = state.logs.filter(l => !(l.teamId === teamId && l.member === member));
+      save();
+      render();
+    }
+
+    function deleteLog(id) {
+      if (!state.isAdmin) return;
+      state.logs = state.logs.filter(l => l.id !== id);
+      save();
+      render();
+    }
+
+    function render() {
+      const lb = leaderboard();
+      const ms = memberStats();
+      const topTeam = lb[0]?.total || 1;
+      const mostActive = [...lb].sort((a,b) => b.today - a.today)[0];
+      const simranLeader = [...ms].sort((a,b) => b.simran - a.simran)[0];
+      const exerciseLeader = [...ms].sort((a,b) => b.exercise - a.exercise)[0];
+      const prizePool = state.teams.reduce((s,t) => s + t.members.length, 0) * 20;
+      const selectedTotal = state.selectedTasks.reduce((s, name) => s + tasks.find(t => t[0] === name)[1], 0);
+      const selectedStats = ms.find(m => m.member === state.selectedMember && m.teamId === Number(state.selectedTeam));
+
+      document.getElementById("app").innerHTML = `
+        <div class="app">
+          <aside class="sidebar">
+            <div class="brand">
+              <div class="brand-icon">HKL</div>
+              <div>
+                <div style="font-weight:800">HKL Club</div>
+                <div style="color:#94a3b8;font-size:13px">Challenge OS</div>
+              </div>
+            </div>
+
+            <div class="nav">
+              <button class="active">Dashboard</button>
+              <button onclick="openHistory()">Full History</button>
+              <button onclick="openAdmin()">Admin Access</button>
+            </div>
+
+            <div class="side-card">
+              <small>Prize Pool</small>
+              <h2>$${prizePool}</h2>
+              <div style="color:#94a3b8;font-size:13px">Based on listed members</div>
+            </div>
+
+            <div class="side-card">
+              <small>Mode</small>
+              <h3>${state.isAdmin ? "Admin" : "Member"}</h3>
+            </div>
+          </aside>
+
+          <main class="main">
+            <header class="topbar">
+              <div>
+                <div class="eyebrow">Self Transformation Challenge</div>
+                <h1>Performance Dashboard</h1>
+                <p class="muted">Track daily commitments, team standings, individual rankings, and full score history.</p>
+              </div>
+              <div class="top-actions">
+                <button class="btn btn-light" onclick="openHistory()">History</button>
+                <button class="btn btn-dark admin-trigger-mobile" onclick="openAdmin()">Admin</button>
+              </div>
+            </header>
+
+            <section class="grid-main">
+              <div class="panel">
+                <div class="panel-head">
+                  <div class="eyebrow">Daily Submission</div>
+                  <h2>Log completed actions</h2>
+                </div>
+                <div class="panel-body">
+                  ${state.profileSaved ? `
+                    <div class="profile-card">
+                      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+                        <div style="display:flex;gap:12px;align-items:center">
+                          <div class="avatar">${initials(state.selectedMember)}</div>
+                          <div>
+                            <strong>${state.selectedMember}</strong>
+                            <div class="muted">${currentTeam()?.name || ""} · Simran ${selectedStats?.simran || 0}d · Exercise ${selectedStats?.exercise || 0}d</div>
+                          </div>
+                        </div>
+                        <button class="btn-red" onclick="changeProfile()">Switch</button>
+                      </div>
+                    </div>
+                  ` : `
+                    <div class="profile-card">
+                      <p style="font-weight:700;margin-top:0">Set up your profile on this device.</p>
+                      <select onchange="state.selectedTeam=Number(this.value);state.selectedMember=currentTeam().members[0];save();render()">
+                        ${state.teams.map(t => `<option value="${t.id}" ${t.id === state.selectedTeam ? "selected" : ""}>${t.name}</option>`).join("")}
+                      </select>
+                      <br><br>
+                      <select onchange="state.selectedMember=this.value;save();render()">
+                        ${(currentTeam()?.members || []).map(m => `<option ${m === state.selectedMember ? "selected" : ""}>${m}</option>`).join("")}
+                      </select>
+                      <br><br>
+                      <button class="btn btn-dark" style="width:100%" onclick="saveProfile()">Save Profile</button>
+                    </div>
+                  `}
+
+                  ${tasks.map(t => `
+                    <button class="task ${state.selectedTasks.includes(t[0]) ? "active" : ""}" onclick="toggleTask('${t[0]}')">
+                      <span>${t[0]}</span>
+                      <span>+${t[1]}</span>
+                    </button>
+                  `).join("")}
+
+                  ${state.isAdmin ? `<input id="manualPoints" placeholder="Manual points override - admin only" type="number" style="margin-top:14px" />` : ""}
+                  <input id="note" placeholder="Optional proof / note" style="margin-top:14px" />
+                  <button class="btn btn-blue" style="width:100%;margin-top:14px" onclick="submitPoints()">Submit ${state.isAdmin ? "manual/selected" : selectedTotal} points</button>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="accent"></div>
+                <div class="panel-head">
+                  <div class="eyebrow">Standings</div>
+                  <h2>Team leaderboard</h2>
+                </div>
+
+                <div class="mobile-cards">
+                  ${lb.map((team, i) => `
+                    <div class="mobile-card">
+                      <div style="display:flex;justify-content:space-between;gap:12px">
+                        <div>
+                          <span class="${rankClass(i)}">#${i+1}</span>
+                          <h3>${team.name}</h3>
+                          <p class="muted">${team.members.join(", ")}</p>
+                        </div>
+                        <div style="text-align:right">
+                          <h2>${team.total}</h2>
+                          <div class="muted">+${team.today} today</div>
+                        </div>
+                      </div>
+                      <div class="bar" style="width:100%"><div class="fill" style="width:${Math.min(100, team.total / topTeam * 100)}%"></div></div>
+                    </div>
+                  `).join("")}
+                </div>
+
+                <div class="desktop-table">
+                  <table>
+                    <thead><tr><th>Rank</th><th>Team</th><th>Members</th><th style="text-align:right">Today</th><th style="text-align:right">Total</th></tr></thead>
+                    <tbody>
+                      ${lb.map((team, i) => `
+                        <tr>
+                          <td><span class="${rankClass(i)}">#${i+1}</span></td>
+                          <td><strong>${team.name}</strong><div class="bar"><div class="fill" style="width:${Math.min(100, team.total / topTeam * 100)}%"></div></div></td>
+                          <td class="muted">${team.members.join(", ")}</td>
+                          <td style="text-align:right">+${team.today}</td>
+                          <td style="text-align:right"><strong>${team.total}</strong></td>
+                        </tr>
+                      `).join("")}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section class="summary">
+              <div class="panel">
+                <div class="panel-head">
+                  <div class="eyebrow">Insights</div>
+                  <h2>Daily summary</h2>
+                </div>
+                <div class="panel-body">
+                  <h3>Today by team</h3>
+                  ${lb.map(team => `
+                    <div style="margin-bottom:14px">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b"><span>${team.name}</span><span>+${team.today}</span></div>
+                      <div class="bar" style="width:100%"><div class="fill" style="width:${Math.min(100, team.today / Math.max(1, mostActive?.today || 1) * 100)}%"></div></div>
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head">
+                  <div class="eyebrow">Streaks</div>
+                  <h2>Leaders</h2>
+                </div>
+                <div class="panel-body">
+                  <div class="stat-box">
+                    <small>Simran Leader</small>
+                    <h3>${simranLeader?.member || "None"}</h3>
+                    <p class="muted">${simranLeader?.simran || 0} day streak</p>
+                  </div>
+                  <br>
+                  <div class="stat-box">
+                    <small>Exercise Leader</small>
+                    <h3>${exerciseLeader?.member || "None"}</h3>
+                    <p class="muted">${exerciseLeader?.exercise || 0} day streak</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="member-grid panel">
+              <div class="panel-head">
+                <div class="eyebrow">Individuals</div>
+                <h2>Member performance</h2>
+              </div>
+
+              <div class="mobile-cards">
+                ${ms.map((p, i) => `
+                  <div class="mobile-card">
+                    <div style="display:flex;justify-content:space-between;gap:12px">
+                      <div style="display:flex;gap:12px;align-items:center">
+                        <div class="avatar">${initials(p.member)}</div>
+                        <div>
+                          <strong>${p.member}</strong>
+                          <div class="muted">${p.teamName} · Rank #${i+1}</div>
+                        </div>
+                      </div>
+                      <div style="text-align:right">
+                        <h2>${p.total}</h2>
+                        <div class="muted">+${p.today} today</div>
+                      </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+                      <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
+                      <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+
+              <div class="desktop-table">
+                <table>
+                  <thead><tr><th>Member</th><th>Team</th><th>Simran</th><th>Exercise</th><th style="text-align:right">Today</th><th style="text-align:right">Total</th></tr></thead>
+                  <tbody>
+                    ${ms.map((p, i) => `
+                      <tr>
+                        <td><strong>${p.member}</strong><br><span class="muted">Rank #${i+1}</span></td>
+                        <td>${p.teamName}</td>
+                        <td>${p.simran}d</td>
+                        <td>${p.exercise}d</td>
+                        <td style="text-align:right">+${p.today}</td>
+                        <td style="text-align:right"><strong>${p.total}</strong></td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <p class="muted" style="margin-top:24px">Device profile is saved locally. For shared live data, connect this to Google Sheets, Supabase, or Firebase.</p>
+          </main>
+        </div>
+
+        <div class="modal ${state.showHistory ? "open" : ""}">
+          <div class="modal-box">
+            <div class="modal-head">
+              <div>
+                <div class="eyebrow">Audit Log</div>
+                <h2>Full history</h2>
+              </div>
+              <button class="btn btn-light" onclick="closeHistory()">✕</button>
+            </div>
+            <div class="modal-content">
+              <input placeholder="Search member, team, task, or date" oninput="state.search=this.value;render()" value="${state.search}" />
+              <br><br>
+              <div style="overflow:auto">
+                <table>
+                  <thead><tr><th>Member</th><th>Team</th><th>Task</th><th>Note</th><th>Date</th><th style="text-align:right">Points</th><th style="text-align:right">Action</th></tr></thead>
+                  <tbody>
+                    ${state.logs.filter(l => `${l.member} ${teamName(l.teamId)} ${l.task} ${l.note} ${l.date}`.toLowerCase().includes(state.search.toLowerCase())).map(l => `
+                      <tr>
+                        <td>${l.member}</td>
+                        <td>${teamName(l.teamId)}</td>
+                        <td>${l.task}</td>
+                        <td>${l.note}</td>
+                        <td>${l.date}</td>
+                        <td style="text-align:right">+${l.points}</td>
+                        <td style="text-align:right">${state.isAdmin ? `<button class="btn-red" onclick="deleteLog(${l.id})">Delete</button>` : `<span class="muted">Admin only</span>`}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal ${state.showAdmin ? "open" : ""}">
+          <div class="modal-box">
+            <div class="modal-head">
+              <div>
+                <div class="eyebrow">Private Controls</div>
+                <h2>Admin access</h2>
+              </div>
+              <button class="btn btn-light" onclick="closeAdmin()">✕</button>
+            </div>
+            <div class="modal-content">
+              <p><strong>${state.isAdmin ? "Admin mode active" : "Member mode active"}</strong></p>
+              <p class="muted">Admin can add/delete teams, remove members, and correct history.</p>
+
+              ${!state.isAdmin ? `
+                <input id="adminCode" placeholder="Admin code" type="password" />
+                <br><br>
+                <button class="btn btn-dark" onclick="loginAdmin()">Login</button>
+              ` : `
+                <button class="btn btn-dark" onclick="state.isAdmin=false;render()">Exit Admin</button>
+                <br><br>
+                <div style="display:grid;grid-template-columns:1fr 2fr auto;gap:12px">
+                  <input id="newTeamName" placeholder="Team name" />
+                  <input id="newMembers" placeholder="Members separated by commas" />
+                  <button class="btn btn-blue" onclick="addTeam()">Add Team</button>
+                </div>
+                <br>
+                <button class="btn btn-light" onclick="state.showTeamManager=!state.showTeamManager;render()">${state.showTeamManager ? "Hide" : "Show"} roster manager</button>
+                <div class="team-manager ${state.showTeamManager ? "open" : ""}">
+                  ${state.teams.map(t => `
+                    <div class="team-box">
+                      <div style="display:flex;justify-content:space-between">
+                        <strong>${t.name}</strong>
+                        <button class="btn-red" onclick="deleteTeam(${t.id})">Delete</button>
+                      </div>
+                      <br>
+                      ${t.members.map(m => `<span class="pill">${m} <button class="btn-red" onclick="deleteMember(${t.id}, '${m}')">×</button></span>`).join("")}
+                    </div>
+                  `).join("")}
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    render();
+  </script>
+</body>
+</html>
