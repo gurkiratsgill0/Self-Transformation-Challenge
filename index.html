@@ -669,6 +669,20 @@ button.task span {
     box-shadow: none !important;
   }
 }
+    .hero-card {
+  background: #111827;
+  border: 1px solid #263244;
+  border-radius: 26px;
+  padding: 24px;
+  margin-bottom: 18px;
+  color: white;
+  box-shadow: 0 18px 40px rgba(0,0,0,.28);
+}
+
+.hero-card h1 {
+  font-size: 34px;
+  margin: 8px 0;
+}
   </style>
 </head>
 
@@ -1065,57 +1079,22 @@ function goToSection(id) {
               </div>
               </div>
 
-              <div class="panel page ${state.activePage === "teams" ? "active" : ""}">
-                <div class="accent"></div>
-                <div class="panel-head">
-                  <div class="eyebrow">Standings</div>
-                  <h2>Team leaderboard</h2>
-                </div>
-
-                <div class="mobile-cards">
-                  ${lb.map((team, i) => `
-                    <div class="mobile-card">
-                      <div style="display:flex;justify-content:space-between;gap:12px">
-                        <div>
-                          <span class="${rankClass(i)}">#${i+1}</span>
-                          <h3>${team.name}</h3>
-                          <p class="muted">${team.members.join(", ")}</p>
-                        </div>
-                        <div style="text-align:right">
-                          <h2>${team.total}</h2>
-                          <div class="muted">+${team.today} today</div>
-                        </div>
-                      </div>
-                      <div class="bar" style="width:100%"><div class="fill" style="width:${Math.min(100, team.total / topTeam * 100)}%"></div></div>
-                    </div>
-                  `).join("")}
-                </div>
-
-                <div class="desktop-table">
-                  <table>
-                    <thead><tr><th>Rank</th><th>Team</th><th>Members</th><th style="text-align:right">Today</th><th style="text-align:right">Total</th></tr></thead>
-                    <tbody>
-                      ${lb.map((team, i) => `
-                        <tr>
-                          <td><span class="${rankClass(i)}">#${i+1}</span></td>
-                          <td><strong>${team.name}</strong><div class="bar"><div class="fill" style="width:${Math.min(100, team.total / topTeam * 100)}%"></div></div></td>
-                          <td class="muted">${team.members.join(", ")}</td>
-                          <td style="text-align:right">+${team.today}</td>
-                          <td style="text-align:right"><strong>${team.total}</strong></td>
-                        </tr>
-                      `).join("")}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
+       
 
             <section class="summary page ${state.activePage === "teams" ? "active" : ""}" id="summary">
 
-  <div style="margin-bottom:18px">
-    <div class="eyebrow">HKL Challenge</div>
-    <h1 style="font-size:32px;margin:8px 0 0">Team Rankings</h1>
-  </div>
+  <div class="hero-card">
+  <div class="eyebrow">Welcome to</div>
+  <h1>HKL Transformation Challenge</h1>
+  <p class="muted">
+    A team-based challenge built around discipline, seva, health, and daily consistency.
+  </p>
+</div>
+
+<div style="margin-bottom:18px">
+  <div class="eyebrow">HKL Challenge</div>
+  <h1 style="font-size:32px;margin:8px 0 0">Team Rankings</h1>
+</div>
 
   <div style="display:grid;gap:14px">
 
