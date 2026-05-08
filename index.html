@@ -161,7 +161,7 @@ input::placeholder {
   margin-bottom: 16px;
   border-radius: 20px;
   background: #111827;
-  border: 1px solid rgba(148,163,184,.14);
+  border: 1px solid rgba(255,255,255,.04);
   box-shadow: 0 6px 18px rgba(0,0,0,.18);
   color: #111827;
   text-align: left;
@@ -171,7 +171,7 @@ input::placeholder {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: #eef2ff;
+  background: rgba(255,255,255,.05);
   display: grid;
   place-items: center;
   font-size: 21px;
@@ -675,7 +675,7 @@ function goToSection(id) {
                 </div>
                 <div class="panel-body">
                   ${state.profileSaved ? `
-                    <div class="profile-card">
+                    <div class="profile-card" style="margin-bottom:24px">
                       <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
                         <div style="display:flex;gap:12px;align-items:center">
                           <div class="avatar">${initials(state.selectedMember)}</div>
