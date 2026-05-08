@@ -158,10 +158,11 @@ input::placeholder {
   align-items: center;
   gap: 14px;
   padding: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   border-radius: 20px;
   background: #111827;
-  border: 1px solid #dbe3ee;
+  border: 1px solid rgba(148,163,184,.14);
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
   color: #111827;
   text-align: left;
 }
@@ -697,7 +698,7 @@ function goToSection(id) {
                         ${(currentTeam()?.members || []).map(m => `<option ${m === state.selectedMember ? "selected" : ""}>${m}</option>`).join("")}
                       </select>
                       <br><br>
-                      <button class="btn btn-dark" style="width:100%" onclick="saveProfile()">Save Profile</button>
+                      <button class="btn btn-dark" style="width:100%;margin-bottom:24px" onclick="saveProfile()">Save Profile</button>
                     </div>
                   `}
 
