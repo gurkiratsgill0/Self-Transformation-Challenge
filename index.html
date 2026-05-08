@@ -550,6 +550,13 @@ button.task span {
     display: none;
   }
 }
+    .page {
+  display: none !important;
+}
+
+.page.active {
+  display: block !important;
+}
   </style>
 </head>
 
@@ -886,7 +893,8 @@ function goToSection(id) {
               </div>
             </header>
 
-           <section class="grid-main page ${state.activePage === "log" ? "active" : ""}" id="home">
+           <section class="grid-main" id="home">
+           <div class="page ${state.activePage === "log" ? "active" : ""}">
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Daily Submission</div>
@@ -948,8 +956,9 @@ function goToSection(id) {
                   <button class="btn btn-blue" style="width:100%;margin-top:14px" onclick="submitPoints()">Submit ${state.isAdmin ? "manual/selected" : selectedTotal} points</button>
                 </div>
               </div>
+              </div>
 
-              <div class="panel">
+              <div class="panel page ${state.activePage === "teams" ? "active" : ""}">
                 <div class="accent"></div>
                 <div class="panel-head">
                   <div class="eyebrow">Standings</div>
