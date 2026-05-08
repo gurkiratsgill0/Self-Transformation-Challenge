@@ -706,7 +706,22 @@ setTimeout(() => loadFromSheet(), 800);
       save();
       render();
     }
+function goToSection(id) {
+  if (id === "history") {
+    openHistory();
+    return;
+  }
 
+  if (id === "admin") {
+    openAdmin();
+    return;
+  }
+
+  document.getElementById(id)?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
     function render() {
       const lb = leaderboard();
       const ms = memberStats();
@@ -760,7 +775,7 @@ setTimeout(() => loadFromSheet(), 800);
               </div>
             </header>
 
-            <section class="grid-main">
+            <section class="grid-main" id="home">
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Daily Submission</div>
@@ -868,7 +883,7 @@ setTimeout(() => loadFromSheet(), 800);
               </div>
             </section>
 
-            <section class="summary">
+            <section class="summary" id="summary">
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Insights</div>
@@ -906,7 +921,7 @@ setTimeout(() => loadFromSheet(), 800);
               </div>
             </section>
 
-            <section class="member-grid panel">
+            <section class="member-grid panel" id="members">
               <div class="panel-head">
                 <div class="eyebrow">Individuals</div>
                 <h2>Member performance</h2>
@@ -957,6 +972,29 @@ setTimeout(() => loadFromSheet(), 800);
 
             <p class="muted" style="margin-top:24px">Device profile is saved locally. For shared live data, connect this to Google Sheets, Supabase, or Firebase.</p>
           </main>
+
+<nav class="bottom-nav">
+  <button class="active" onclick="goToSection('home')">
+    <span>🏠</span>
+    Home
+  </button>
+
+  <button onclick="goToSection('summary')">
+    <span>📊</span>
+    Stats
+  </button>
+
+  <button onclick="goToSection('members')">
+    <span>👥</span>
+    Members
+  </button>
+
+  <button onclick="goToSection('admin')">
+    <span>🔐</span>
+    Admin
+  </button>
+</nav>
+
         </div>
 
         <div class="modal ${state.showHistory ? "open" : ""}">
@@ -1076,7 +1114,115 @@ setTimeout(() => loadFromSheet(), 800);
     loadFromSheet();
   }
 }, 3000);
+
+    /* DARK MOBILE APP THEME */
+@media (max-width: 900px) {
+  body {
+    background: #050816;
+    color: #f8fafc;
+  }
+
+  .main {
+    padding: 18px 14px 90px;
+    background:
+      radial-gradient(circle at top right, rgba(124,58,237,.35), transparent 35%),
+      radial-gradient(circle at top left, rgba(49,92,255,.25), transparent 30%),
+      #050816;
+  }
+
+  h1, h2, h3, strong {
+    color: #f8fafc;
+  }
+
+  .muted {
+    color: #94a3b8;
+  }
+
+  .panel,
+  .mobile-card,
+  .profile-card,
+  .stat-box {
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    color: #f8fafc;
+  }
+
+  input, select {
+    background: #0f172a;
+    border-color: #334155;
+    color: white;
+  }
+
+  .task {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-color: rgba(148, 163, 184, 0.18) !important;
+    color: white !important;
+  }
+
+  .task-name,
+  .task-points {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+  }
+
+  .task-icon {
+    background: rgba(124,58,237,.18);
+  }
+
+  .task.active {
+    background: linear-gradient(135deg, #6d28d9, #315cff) !important;
+    border-color: #8b5cf6 !important;
+    transform: scale(1.01);
+  }
+
+  .bottom-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    height: 68px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 8px;
+    z-index: 80;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.45);
+  }
+
+  .bottom-nav button {
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 800;
+    display: grid;
+    place-items: center;
+    gap: 2px;
+  }
+
+  .bottom-nav button span {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .bottom-nav button.active {
+    background: linear-gradient(135deg, #6d28d9, #315cff);
+    color: white;
+  }
+}
+
+@media (min-width: 901px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+    
   </script>
-  <!-- update -->
 </body>
 </html>
