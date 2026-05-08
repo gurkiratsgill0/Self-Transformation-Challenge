@@ -595,8 +595,9 @@ button.task span {
       selectedTasks: [],
       showHistory: false,
       showAdmin: false,
-      showTeamManager: false,
-      search: "",
+showTeamManager: false,
+activePage: "teams",
+search: "",
     };
 
     const today = () => {
@@ -828,6 +829,10 @@ function goToSection(id) {
     block: "start"
   });
 }
+    function setPage(page) {
+  state.activePage = page;
+  render();
+}
     function render() {
       const lb = leaderboard();
       const ms = memberStats();
@@ -881,7 +886,7 @@ function goToSection(id) {
               </div>
             </header>
 
-            <section class="grid-main" id="home">
+           <section class="grid-main page ${state.activePage === "log" ? "active" : ""}" id="home">
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Daily Submission</div>
@@ -989,7 +994,7 @@ function goToSection(id) {
               </div>
             </section>
 
-            <section class="summary" id="summary">
+            <section class="summary page ${state.activePage === "teams" ? "active" : ""}" id="summary">
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Insights</div>
@@ -1027,7 +1032,7 @@ function goToSection(id) {
               </div>
             </section>
 
-            <section class="member-grid panel" id="members">
+            <section class="member-grid panel page ${state.activePage === "players" ? "active" : ""}" id="members">
               <div class="panel-head">
                 <div class="eyebrow">Individuals</div>
                 <h2>Member performance</h2>
@@ -1080,24 +1085,24 @@ function goToSection(id) {
           </main>
 
 <nav class="bottom-nav">
-  <button class="active" onclick="goToSection('home')">
-    <span>🏠</span>
-    Home
+  <button class="${state.activePage === "teams" ? "active" : ""}" onclick="setPage('teams')">
+    <span>🏆</span>
+    Teams
   </button>
 
-  <button onclick="goToSection('summary')">
-    <span>📊</span>
-    Stats
+  <button class="${state.activePage === "log" ? "active" : ""}" onclick="setPage('log')">
+    <span>➕</span>
+    Log
   </button>
 
-  <button onclick="goToSection('members')">
+  <button class="${state.activePage === "players" ? "active" : ""}" onclick="setPage('players')">
     <span>👥</span>
-    Members
+    Players
   </button>
 
-  <button onclick="goToSection('admin')">
-    <span>🔐</span>
-    Admin
+  <button class="${state.activePage === "activity" ? "active" : ""}" onclick="setPage('activity')">
+    <span>🕒</span>
+    Activity
   </button>
 </nav>
 
