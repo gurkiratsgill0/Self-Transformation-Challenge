@@ -532,6 +532,7 @@ button.task span {
     display: grid;
     place-items: center;
     gap: 2px;
+    transition: .2s ease;
   }
 
   .bottom-nav button span {
@@ -540,9 +541,11 @@ button.task span {
   }
 
   .bottom-nav button.active {
-    background: linear-gradient(135deg, #6d28d9, #315cff);
-    color: white;
-  }
+  background: linear-gradient(135deg, #7c3aed, #315cff);
+  color: white;
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(99,102,241,.45);
+}
 }
 
 @media (min-width: 901px) {
@@ -556,6 +559,40 @@ button.task span {
 
 .page.active {
   display: block !important;
+}
+    @media (max-width: 900px) {
+  .panel-head,
+  .panel-body,
+  .mobile-card,
+  .profile-card,
+  .stat-box {
+    color: #f8fafc !important;
+  }
+
+  .mobile-card h2,
+  .mobile-card h3,
+  .mobile-card strong,
+  .panel h1,
+  .panel h2,
+  .panel h3 {
+    color: #f8fafc !important;
+  }
+
+  .mobile-card .muted,
+  .profile-card .muted,
+  .stat-box .muted {
+    color: #cbd5e1 !important;
+  }
+
+  .btn-light {
+    background: rgba(255,255,255,.08) !important;
+    color: #f8fafc !important;
+    border-color: rgba(255,255,255,.15) !important;
+  }
+
+  .rank {
+    color: #111827 !important;
+  }
 }
   </style>
 </head>
@@ -881,20 +918,15 @@ function goToSection(id) {
           </aside>
 
           <main class="main">
-            <header class="topbar">
-              <div>
-                <div class="eyebrow">Self Transformation Challenge</div>
-                <h1>Performance Dashboard</h1>
-                <p class="muted">Track daily commitments, team standings, individual rankings, and full score history.</p>
-              </div>
-              <div class="top-actions">
-                <button class="btn btn-light" onclick="openHistory()">History</button>
-                <button class="btn btn-dark admin-trigger-mobile" onclick="openAdmin()">Admin</button>
-              </div>
-            </header>
+            
 
-           <section class="grid-main" id="home">
+           <section class="grid-main" id="home" style="display:block">
            <div class="page ${state.activePage === "log" ? "active" : ""}">
+           <div style="margin-bottom:18px">
+  <div class="eyebrow">Daily Check-In</div>
+  <h1 style="font-size:32px;margin:8px 0 0">Log Points</h1>
+  <p class="muted" style="margin-top:8px">Select what you completed today.</p>
+</div>
               <div class="panel">
                 <div class="panel-head">
                   <div class="eyebrow">Daily Submission</div>
@@ -1004,48 +1036,82 @@ function goToSection(id) {
             </section>
 
             <section class="summary page ${state.activePage === "teams" ? "active" : ""}" id="summary">
-              <div class="panel">
-                <div class="panel-head">
-                  <div class="eyebrow">Insights</div>
-                  <h2>Daily summary</h2>
-                </div>
-                <div class="panel-body">
-                  <h3>Today by team</h3>
-                  ${lb.map(team => `
-                    <div style="margin-bottom:14px">
-                      <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b"><span>${team.name}</span><span>+${team.today}</span></div>
-                      <div class="bar" style="width:100%"><div class="fill" style="width:${Math.min(100, team.today / Math.max(1, mostActive?.today || 1) * 100)}%"></div></div>
-                    </div>
-                  `).join("")}
-                </div>
-              </div>
 
-              <div class="panel">
-                <div class="panel-head">
-                  <div class="eyebrow">Streaks</div>
-                  <h2>Leaders</h2>
-                </div>
-                <div class="panel-body">
-                  <div class="stat-box">
-                    <small>Simran Leader</small>
-                    <h3>${simranLeader?.member || "None"}</h3>
-                    <p class="muted">${simranLeader?.simran || 0} day streak</p>
-                  </div>
-                  <br>
-                  <div class="stat-box">
-                    <small>Exercise Leader</small>
-                    <h3>${exerciseLeader?.member || "None"}</h3>
-                    <p class="muted">${exerciseLeader?.exercise || 0} day streak</p>
-                  </div>
-                </div>
-              </div>
-            </section>
+  <div style="margin-bottom:18px">
+    <div class="eyebrow">HKL Challenge</div>
+    <h1 style="font-size:32px;margin:8px 0 0">Team Rankings</h1>
+  </div>
 
-            <section class="member-grid panel page ${state.activePage === "players" ? "active" : ""}" id="members">
-              <div class="panel-head">
-                <div class="eyebrow">Individuals</div>
-                <h2>Member performance</h2>
-              </div>
+  <div style="display:grid;gap:14px">
+
+    ${lb.map((team, i) => `
+      <div class="mobile-card" style="
+        background:${i === 0 
+          ? 'linear-gradient(135deg,#6d28d9,#315cff)' 
+          : 'rgba(15,23,42,.92)'};
+        border:${i === 0 
+          ? '1px solid rgba(255,255,255,.12)' 
+          : '1px solid rgba(148,163,184,.14)'};
+        box-shadow:${i === 0
+          ? '0 20px 50px rgba(99,102,241,.35)'
+          : '0 12px 30px rgba(0,0,0,.28)'};
+      ">
+
+        <div style="display:flex;justify-content:space-between;align-items:center">
+
+          <div>
+            <div style="
+              font-size:13px;
+              font-weight:800;
+              opacity:.8;
+              margin-bottom:6px;
+            ">
+              ${i === 0 ? "👑 FIRST PLACE" : `#${i+1} TEAM`}
+            </div>
+
+            <h2 style="margin:0">${team.name}</h2>
+
+            <div class="muted" style="margin-top:6px">
+              ${team.members.join(", ")}
+            </div>
+          </div>
+
+          <div style="text-align:right">
+            <div style="font-size:34px;font-weight:900">
+              ${team.total}
+            </div>
+
+            <div style="font-size:13px;opacity:.75">
+              +${team.today} today
+            </div>
+          </div>
+
+        </div>
+
+        <div class="bar" style="
+          width:100%;
+          margin-top:18px;
+          background:rgba(255,255,255,.14);
+        ">
+          <div class="fill" style="
+            width:${Math.min(100, team.total / topTeam * 100)}%;
+            background:white;
+          "></div>
+        </div>
+
+      </div>
+    `).join("")}
+
+  </div>
+
+</section>
+
+            <section class="member-grid page ${state.activePage === "players" ? "active" : ""}" id="members">
+              <div style="margin-bottom:18px">
+  <div class="eyebrow">Individual Rankings</div>
+  <h1 style="font-size:32px;margin:8px 0 0">Players</h1>
+  <p class="muted" style="margin-top:8px">Overall ranking for every member.</p>
+</div>
 
               <div class="mobile-cards">
                 ${ms.map((p, i) => `
@@ -1090,7 +1156,29 @@ function goToSection(id) {
               </div>
             </section>
 
-            <p class="muted" style="margin-top:24px">Device profile is saved locally. For shared live data, connect this to Google Sheets, Supabase, or Firebase.</p>
+            <section class="page ${state.activePage === "activity" ? "active" : ""}" id="activity">
+  <div style="margin-bottom:18px">
+    <div class="eyebrow">Recent Activity</div>
+    <h1 style="font-size:32px;margin:8px 0 0">Activity</h1>
+    <p class="muted" style="margin-top:8px">Latest point submissions from everyone.</p>
+  </div>
+
+  <div style="display:grid;gap:12px">
+    ${state.logs.slice().reverse().slice(0, 20).map(l => `
+      <div class="mobile-card">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="avatar">${initials(l.member)}</div>
+          <div style="flex:1">
+            <strong>${l.member}</strong>
+            <div class="muted">${teamName(l.teamId)} · ${l.task}</div>
+            <div class="muted">${l.date}${l.note ? ` · ${l.note}` : ""}</div>
+          </div>
+          <div style="font-size:20px;font-weight:900">+${l.points}</div>
+        </div>
+      </div>
+    `).join("")}
+  </div>
+</section>
           </main>
 
 <nav class="bottom-nav">
