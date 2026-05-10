@@ -33,7 +33,11 @@ button { cursor: pointer; }
 }
 
 .page {
-  display: none;
+  display: none !important;
+}
+
+.page.active {
+  display: block !important;
 }
 
 .page.active {
@@ -924,7 +928,7 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
 </div>
 </section>
 
-            <section class="page ${state.activePage === "players" ? "active" : ""}" id="members">
+            <section style="${state.activePage === "players" ? "display:block" : "display:none"}" id="members">
               <div style="margin-bottom:18px">
   <div class="eyebrow">Individual Rankings</div>
   <h1 style="font-size:32px;margin:8px 0 0">Players</h1>
