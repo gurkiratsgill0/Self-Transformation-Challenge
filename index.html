@@ -436,7 +436,7 @@ search: "",
       .filter(l => l.teamId === team.id)
       .map(l => String(l.member).trim());
 
-    const allMembers = [...new Set([...rosterMembers, ...logMembers])];
+    const allMembers = [...new Set([...rosterMembers, ...logMembers])].filter(m => m && m.trim());
 
     return allMembers.map(member => {
       const logs = state.logs.filter(l =>
@@ -485,8 +485,9 @@ search: "",
       render();
     }
 
-   function submitPoints() {
+  function submitPoints() {
   if (!state.profileSaved) return alert("Save your profile first.");
+  if (!state.selectedMember || !state.selectedMember.trim()) return alert("Select your name first.");
   if (!state.selectedTasks.length) return alert("Select at least one task.");
 
   const note = document.getElementById("note")?.value || "";
