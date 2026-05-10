@@ -435,24 +435,36 @@ search: "",
     }
 
     function memberStats() {
-      return state.teams.flatMap(team =>
-        team.members.map(member => {
-          const logs = state.logs.filter(l => l.teamId === team.id && l.member === member);
-          return {
-  member,
-  teamId: team.id,
-  teamName: team.name,
-  total: logs.reduce((s,l) => s + l.points, 0),
-  today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
+  return state.teams.flatMap(team => {
+    const rosterMembers = team.members.map(m => String(m).trim());
 
-  exercise: getStreak(member, "Exercise for 45 mins"),
-  nitnem: getStreak(member, "Nitnem or Japji Sahib"),
-  simran: getStreak(member, "Morning Simran"),
-  bachans: getStreak(member, "Listen to Bachans and take notes"),
-};
-        })
-      ).sort((a,b) => b.total - a.total);
-    }
+    const logMembers = state.logs
+      .filter(l => l.teamId === team.id)
+      .map(l => String(l.member).trim());
+
+    const allMembers = [...new Set([...rosterMembers, ...logMembers])];
+
+    return allMembers.map(member => {
+      const logs = state.logs.filter(l =>
+        l.teamId === team.id &&
+        String(l.member).trim() === member
+      );
+
+      return {
+        member,
+        teamId: team.id,
+        teamName: team.name,
+        total: logs.reduce((s,l) => s + l.points, 0),
+        today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
+
+        exercise: getStreak(member, "Exercise for 45 mins"),
+        nitnem: getStreak(member, "Nitnem or Japji Sahib"),
+        simran: getStreak(member, "Morning Simran"),
+        bachans: getStreak(member, "Listen to Bachans and take notes"),
+      };
+    });
+  }).sort((a,b) => b.total - a.total);
+}
 
     function leaderboard() {
       return state.teams.map(team => {
