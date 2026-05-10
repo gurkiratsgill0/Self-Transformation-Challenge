@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HKL Transformation Challenge</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
 * { box-sizing: border-box; }
 
@@ -345,16 +346,17 @@ table {
     const ADMIN_CODE = "hkladmin";
 
     const tasks = [
-      ["Wake up for Simran", 10],
-      ["Daily pledge", 5],
-      ["Exercise for 45 minutes", 15],
-      ["Sit with yourself for 10 minutes", 10],
-      ["Japji Sahib", 15],
-      ["Bring new friend to HKL", 30],
-      ["Small kindness act", 5],
-      ["Medium kindness act", 15],
-      ["Big kindness act", 30],
-    ];
+  ["Exercise for 45 mins", 2],
+  ["HKL pledge", 2],
+  ["Nitnem or Japji Sahib", 2],
+  ["Sit with yourself for 10 mins", 3],
+  ["Write what you're grateful for + befqoofia", 2],
+  ["Morning Simran", 5],
+  ["Listen to Bachans and take notes", 4],
+  ["HKL signup", 4],
+  ["Bring someone new to an HKL club event", 5],
+  ["General kindness acts", 5],
+];
 
     const defaultTeams = [
       { id: 1, name: "Alpha", members: ["Gurkirat", "Member B"] },
@@ -430,14 +432,17 @@ search: "",
         team.members.map(member => {
           const logs = state.logs.filter(l => l.teamId === team.id && l.member === member);
           return {
-            member,
-            teamId: team.id,
-            teamName: team.name,
-            total: logs.reduce((s,l) => s + l.points, 0),
-            today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
-            simran: getStreak(member, "Wake up for Simran"),
-            exercise: getStreak(member, "Exercise for 45 minutes"),
-          };
+  member,
+  teamId: team.id,
+  teamName: team.name,
+  total: logs.reduce((s,l) => s + l.points, 0),
+  today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
+
+  exercise: getStreak(member, "Exercise for 45 mins"),
+  nitnem: getStreak(member, "Nitnem or Japji Sahib"),
+  simran: getStreak(member, "Morning Simran"),
+  bachans: getStreak(member, "Listen to Bachans and take notes"),
+};
         })
       ).sort((a,b) => b.total - a.total);
     }
@@ -631,6 +636,8 @@ function goToSection(id) {
       const mostActive = [...ms].sort((a,b) => b.today - a.today)[0];
       const simranLeader = [...ms].sort((a,b) => b.simran - a.simran)[0];
       const exerciseLeader = [...ms].sort((a,b) => b.exercise - a.exercise)[0];
+      const nitnemLeader = [...ms].sort((a,b) => b.nitnem - a.nitnem)[0];
+const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
       const prizePool = state.teams.reduce((s,t) => s + t.members.length, 0) * 20;
       const selectedTotal = state.selectedTasks.reduce((s, name) => s + tasks.find(t => t[0] === name)[1], 0);
       const selectedStats = ms.find(m => m.member === state.selectedMember && m.teamId === Number(state.selectedTeam));
@@ -687,7 +694,13 @@ function goToSection(id) {
                           <div class="avatar">${initials(state.selectedMember)}</div>
                           <div>
                             <strong>${state.selectedMember}</strong>
-                            <div class="muted">${currentTeam()?.name || ""} · Simran ${selectedStats?.simran || 0}d · Exercise ${selectedStats?.exercise || 0}d</div>
+                            <div class="muted">
+  ${currentTeam()?.name || ""}
+  · Exercise ${selectedStats?.exercise || 0}d
+  · Nitnem ${selectedStats?.nitnem || 0}d
+  · Simran ${selectedStats?.simran || 0}d
+  · Bachans ${selectedStats?.bachans || 0}d
+</div>
                           </div>
                         </div>
                         <button class="btn-red" onclick="changeProfile()">Switch</button>
@@ -715,23 +728,24 @@ function goToSection(id) {
 
                   ${tasks.map(t => {
   const icons = {
-    "Wake up for Simran": "☀️",
-    "Daily pledge": "✨",
-    "Exercise for 45 minutes": "🏋️",
-    "Sit with yourself for 10 minutes": "🧘",
-    "Japji Sahib": "🙏",
-    "Bring new friend to HKL": "👥",
-    "Small kindness act": "🤝",
-    "Medium kindness act": "💙",
-    "Big kindness act": "🌟"
-  };
+  "Exercise for 45 mins": "dumbbell",
+  "HKL pledge": "sparkles",
+  "Nitnem or Japji Sahib": "book",
+  "Sit with yourself for 10 mins": "brain",
+  "Write what you're grateful for + befqoofia": "square-pen",
+  "Morning Simran": "sun",
+  "Listen to Bachans and take notes": "headphones",
+  "HKL signup": "user-plus",
+  "Bring someone new to an HKL club event": "users",
+  "General kindness acts": "heart-handshake"
+};
 
   return `
     <button class="task ${state.selectedTasks.includes(t[0]) ? "active" : ""}" onclick="toggleTask('${t[0]}')">
 
-  <div class="task-icon">
-    ${icons[t[0]] || "✦"}
-  </div>
+ <div class="task-icon">
+  <i data-lucide="${icons[t[0]] || 'circle'}"></i>
+</div>
 
   <div class="task-name">
     ${t[0]}
@@ -908,6 +922,11 @@ function goToSection(id) {
                       </div>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+  <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
+  <div class="stat-box"><small>Nitnem</small><strong>${p.nitnem}d</strong></div>
+  <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
+  <div class="stat-box"><small>Bachans</small><strong>${p.bachans}d</strong></div>
+</div>
                       <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
                       <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
                     </div>
@@ -1061,6 +1080,7 @@ function goToSection(id) {
           </div>
         </div>
       `;
+      lucide.createIcons();
     }
 
     async function loadFromSheet() {
