@@ -928,59 +928,50 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
 </div>
 </section>
 
-            <section style="${state.activePage === "players" ? "display:block" : "display:none"}" id="members">
-              <div style="margin-bottom:18px">
-  <div class="eyebrow">Individual Rankings</div>
-  <h1 style="font-size:32px;margin:8px 0 0">Players</h1>
-  <p class="muted" style="margin-top:8px">Overall ranking for every member.</p>
-</div>
+            ${state.activePage === "players" ? `
+<section id="members">
 
-              <div class="mobile-cards">
-                ${ms.map((p, i) => `
-                  <div class="mobile-card">
-                    <div style="display:flex;justify-content:space-between;gap:12px">
-                      <div style="display:flex;gap:12px;align-items:center">
-                        <div class="avatar">${initials(p.member)}</div>
-                        <div>
-                          <strong>${p.member}</strong>
-                          <div class="muted">${p.teamName} · Rank #${i+1}</div>
-                        </div>
-                      </div>
-                      <div style="text-align:right">
-                        <h2>${p.total}</h2>
-                        <div class="muted">+${p.today} today</div>
-                      </div>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
-  <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
-  <div class="stat-box"><small>Nitnem</small><strong>${p.nitnem}d</strong></div>
-  <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
-  <div class="stat-box"><small>Bachans</small><strong>${p.bachans}d</strong></div>
-</div>
-                      
-                    </div>
-                  </div>
-                `).join("")}
-              </div>
+  <div style="margin-bottom:18px">
+    <div class="eyebrow">Individual Rankings</div>
+    <h1 style="font-size:32px;margin:8px 0 0">Players</h1>
+    <p class="muted" style="margin-top:8px">Overall ranking for every member.</p>
+  </div>
 
-              <div class="desktop-table">
-                <table>
-                  <thead><tr><th>Member</th><th>Team</th><th>Simran</th><th>Exercise</th><th style="text-align:right">Today</th><th style="text-align:right">Total</th></tr></thead>
-                  <tbody>
-                    ${ms.map((p, i) => `
-                      <tr>
-                        <td><strong>${p.member}</strong><br><span class="muted">Rank #${i+1}</span></td>
-                        <td>${p.teamName}</td>
-                        <td>${p.simran}d</td>
-                        <td>${p.exercise}d</td>
-                        <td style="text-align:right">+${p.today}</td>
-                        <td style="text-align:right"><strong>${p.total}</strong></td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+  <div class="mobile-cards">
+    ${ms.map((p, i) => `
+      <div class="mobile-card">
+
+        <div style="display:flex;justify-content:space-between;gap:12px">
+
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="avatar">${initials(p.member)}</div>
+
+            <div>
+              <strong>${p.member}</strong>
+              <div class="muted">${p.teamName} · Rank #${i+1}</div>
+            </div>
+          </div>
+
+          <div style="text-align:right">
+            <h2>${p.total}</h2>
+            <div class="muted">+${p.today} today</div>
+          </div>
+
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
+          <div class="stat-box"><small>Nitnem</small><strong>${p.nitnem}d</strong></div>
+          <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
+          <div class="stat-box"><small>Bachans</small><strong>${p.bachans}d</strong></div>
+        </div>
+
+      </div>
+    `).join("")}
+  </div>
+
+</section>
+` : ""}
 
             <section class="page ${state.activePage === "activity" ? "active" : ""}" id="activity">
   <div style="margin-bottom:18px">
