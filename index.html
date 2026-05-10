@@ -508,12 +508,18 @@ render();
 // 🔁 silently sync with sheet (no delay visible)
 setTimeout(() => loadFromSheet(), 100);
 }
-
+function save() {
+  localStorage.setItem("hklTeams", JSON.stringify(state.teams));
+  localStorage.setItem("hklLogs", JSON.stringify(state.logs));
+  localStorage.setItem("hklSelectedTeam", state.selectedTeam);
+  localStorage.setItem("hklSelectedMember", state.selectedMember);
+  localStorage.setItem("hklProfileSaved", state.profileSaved);
+}
     function saveProfile() {
-      state.profileSaved = true;
-      save();
-      render();
-    }
+  state.profileSaved = true;
+  save();
+  render();
+}
 
     function changeProfile() {
       state.profileSaved = false;
@@ -690,7 +696,12 @@ function goToSection(id) {
                   ` : `
                     <div class="profile-card">
                       <p style="font-weight:700;margin-top:0">Set up your profile on this device.</p>
-                      <select onchange="state.selectedTeam=Number(this.value);state.selectedMember=currentTeam().members[0];save();render()">
+                      <select onchange="
+  state.selectedTeam = Number(this.value);
+  state.selectedMember = state.teams.find(t => t.id === state.selectedTeam)?.members?.[0] || '';
+  save();
+  render();
+">
                         ${state.teams.map(t => `<option value="${t.id}" ${t.id === state.selectedTeam ? "selected" : ""}>${t.name}</option>`).join("")}
                       </select>
                       <br><br>
@@ -1088,7 +1099,7 @@ function goToSection(id) {
   ) {
     loadFromSheet();
   }
-}, 3000);
+}, 5000);
  </script>
   
  
