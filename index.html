@@ -628,7 +628,7 @@ function goToSection(id) {
       const lb = leaderboard();
       const ms = memberStats();
       const topTeam = lb[0]?.total || 1;
-      const mostActive = [...lb].sort((a,b) => b.today - a.today)[0];
+      const mostActive = [...ms].sort((a,b) => b.today - a.today)[0];
       const simranLeader = [...ms].sort((a,b) => b.simran - a.simran)[0];
       const exerciseLeader = [...ms].sort((a,b) => b.exercise - a.exercise)[0];
       const prizePool = state.teams.reduce((s,t) => s + t.members.length, 0) * 20;
