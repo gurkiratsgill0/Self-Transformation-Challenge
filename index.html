@@ -371,20 +371,14 @@ table {
       { id: 3, name: "Gamma", members: ["Member E", "Member F"] },
     ];
 
-    const defaultLogs = [
-      { id: 1, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 1", date: "2026-05-01" },
-      { id: 2, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 2", date: "2026-05-02" },
-      { id: 3, teamId: 1, member: "Gurkirat", task: "Wake up for Simran", points: 10, note: "Day 3", date: "2026-05-03" },
-      { id: 4, teamId: 1, member: "Gurkirat", task: "Exercise for 45 minutes", points: 15, note: "Gym", date: "2026-05-04" },
-      { id: 5, teamId: 2, member: "Member C", task: "Exercise for 45 minutes", points: 15, note: "Workout", date: "2026-05-04" },
-    ];
+    const defaultLogs = [];
 
     let state = {
       teams: JSON.parse(localStorage.getItem("hklTeams")) || defaultTeams,
       logs: JSON.parse(localStorage.getItem("hklLogs")) || defaultLogs,
       isAdmin: false,
       selectedTeam: Number(localStorage.getItem("hklSelectedTeam")) || 1,
-      selectedMember: localStorage.getItem("hklSelectedMember") || "Gurkirat",
+      selectedMember: localStorage.getItem("hklSelectedMember") || "",
       profileSaved: localStorage.getItem("hklProfileSaved") === "true",
       selectedTasks: [],
       showHistory: false,
