@@ -71,8 +71,8 @@ h2, h3, strong {
 .profile-card,
 .stat-box,
 .hero-card {
-  background: #111827;
-  border: 1px solid #1f2937;
+  background: #172033;
+  border: 1px solid #2f3b4d;
   border-radius: 22px;
   color: #f9fafb;
 }
@@ -241,7 +241,7 @@ table {
   bottom: 12px;
   height: 68px;
   background: #111827;
-  border: 1px solid #1f2937;
+  border: 1px solid #2f3b4d;
   border-radius: 24px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -294,7 +294,7 @@ table {
   background: #111827;
   color: white;
   border-radius: 24px;
-  border: 1px solid #1f2937;
+  border: 1px solid #2f3b4d;
 }
 
 .modal-head {
@@ -321,7 +321,7 @@ table {
 }
 
 .team-box {
-  border: 1px solid #1f2937;
+  border: 1px solid #2f3b4d;
   border-radius: 16px;
   padding: 16px;
 }
@@ -350,7 +350,7 @@ table {
   ["HKL pledge", 2],
   ["Nitnem or Japji Sahib", 2],
   ["Sit with yourself for 10 mins", 3],
-  ["Write what you're grateful for + befqoofia", 2],
+  ["Write grateful + befqoofia", 2],
   ["Morning Simran", 5],
   ["Listen to Bachans and take notes", 4],
   ["HKL signup", 4],
@@ -732,7 +732,7 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
   "HKL pledge": "sparkles",
   "Nitnem or Japji Sahib": "book",
   "Sit with yourself for 10 mins": "brain",
-  "Write what you're grateful for + befqoofia": "square-pen",
+  "Write grateful + befqoofia": "square-pen",
   "Morning Simran": "sun",
   "Listen to Bachans and take notes": "headphones",
   "HKL signup": "user-plus",
@@ -881,6 +881,32 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
     </div>
 
     <div class="mobile-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div class="muted">📖 Nitnem Leader</div>
+      <h3 style="margin:6px 0 0">${nitnemLeader?.member || "-"}</h3>
+    </div>
+
+    <div style="font-size:28px;font-weight:900">
+      ${nitnemLeader?.nitnem || 0}
+    </div>
+  </div>
+</div>
+
+<div class="mobile-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div class="muted">🎧 Bachans Leader</div>
+      <h3 style="margin:6px 0 0">${bachansLeader?.member || "-"}</h3>
+    </div>
+
+    <div style="font-size:28px;font-weight:900">
+      ${bachansLeader?.bachans || 0}
+    </div>
+  </div>
+</div>
+
+<div class="mobile-card">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
           <div class="muted">⚡ Most Active Today</div>
@@ -898,7 +924,7 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
 </div>
 </section>
 
-            <section class="member-grid page ${state.activePage === "players" ? "active" : ""}" id="members">
+            <section class="page ${state.activePage === "players" ? "active" : ""}" id="members">
               <div style="margin-bottom:18px">
   <div class="eyebrow">Individual Rankings</div>
   <h1 style="font-size:32px;margin:8px 0 0">Players</h1>
@@ -927,8 +953,7 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
   <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
   <div class="stat-box"><small>Bachans</small><strong>${p.bachans}d</strong></div>
 </div>
-                      <div class="stat-box"><small>Simran</small><strong>${p.simran}d</strong></div>
-                      <div class="stat-box"><small>Exercise</small><strong>${p.exercise}d</strong></div>
+                      
                     </div>
                   </div>
                 `).join("")}
