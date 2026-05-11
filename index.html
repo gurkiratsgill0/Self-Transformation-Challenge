@@ -515,7 +515,7 @@ search: "",
       render();
     }
 
-  function submitPoints() {
+  async function submitPoints() {
   if (!state.profileSaved) return alert("Save your profile first.");
   if (!state.selectedMember || !String(state.selectedMember).trim()) return alert("Select your name first.");
   if (!state.selectedTasks.length) return alert("Select at least one task.");
@@ -523,20 +523,7 @@ search: "",
   const note = document.getElementById("note")?.value || "";
   const tasksToSubmit = [...state.selectedTasks];
 
-  tasksToSubmit.forEach(task => {
-    const formData = new FormData();
-    formData.append("team", currentTeam().name);
-    formData.append("member", state.selectedMember);
-    formData.append("task", task);
-    formData.append("points", tasks.find(t => t[0] === task)?.[1] || 0);
-    formData.append("note", note);
-    formData.append("date", today());
-
-    fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
-      method: "POST",
-      body: formData
-    });
-  });
+  state.selectedTasks = [];
 
   tasksToSubmit.forEach(task => {
     state.logs.push({
@@ -550,11 +537,25 @@ search: "",
     });
   });
 
-  state.selectedTasks = [];
   save();
   render();
 
-  setTimeout(() => loadFromSheet(), 800);
+  await Promise.all(tasksToSubmit.map(task => {
+    const formData = new FormData();
+    formData.append("team", currentTeam().name);
+    formData.append("member", state.selectedMember);
+    formData.append("task", task);
+    formData.append("points", tasks.find(t => t[0] === task)?.[1] || 0);
+    formData.append("note", note);
+    formData.append("date", today());
+
+    return fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
+      method: "POST",
+      body: formData
+    });
+  }));
+
+  setTimeout(() => loadFromSheet(), 1500);
 }
 function save() {
   localStorage.setItem("hklTeams", JSON.stringify(state.teams));
