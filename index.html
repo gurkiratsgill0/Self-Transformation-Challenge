@@ -1177,7 +1177,10 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
 
   render();
 }
-    loadFromSheet();
+    render();
+    setTimeout(() => {
+  loadFromSheet();
+}, 300);
    setInterval(() => {
   const activeTag = document.activeElement?.tagName;
 
@@ -1189,7 +1192,7 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
   ) {
     loadFromSheet();
   }
-}, 5000);
+}, 15000);
  </script>
   
  
