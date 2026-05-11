@@ -554,10 +554,10 @@ search: "",
   formData.append("type", "logs");
   formData.append("logs", JSON.stringify(newLogs));
 
-  await fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
-    method: "POST",
-    body: formData
-  });
+  await fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
+  method: "POST",
+  body: formData
+});
 
   setTimeout(() => loadFromSheet(), 1500);
 }
