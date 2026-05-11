@@ -523,37 +523,41 @@ search: "",
   const note = document.getElementById("note")?.value || "";
   const tasksToSubmit = [...state.selectedTasks];
 
+  const newLogs = tasksToSubmit.map(task => ({
+    team: currentTeam().name,
+    teamId: currentTeam().id,
+    member: state.selectedMember,
+    task: task,
+    points: tasks.find(t => t[0] === task)?.[1] || 0,
+    note: note,
+    date: today()
+  }));
+
   state.selectedTasks = [];
 
-  tasksToSubmit.forEach(task => {
+  newLogs.forEach(l => {
     state.logs.push({
       id: Date.now() + Math.random(),
-      teamId: currentTeam().id,
-      member: state.selectedMember,
-      task: task,
-      points: tasks.find(t => t[0] === task)?.[1] || 0,
-      note: note,
-      date: today()
+      teamId: l.teamId,
+      member: l.member,
+      task: l.task,
+      points: l.points,
+      note: l.note,
+      date: l.date
     });
   });
 
   save();
   render();
 
-  await Promise.all(tasksToSubmit.map(task => {
-    const formData = new FormData();
-    formData.append("team", currentTeam().name);
-    formData.append("member", state.selectedMember);
-    formData.append("task", task);
-    formData.append("points", tasks.find(t => t[0] === task)?.[1] || 0);
-    formData.append("note", note);
-    formData.append("date", today());
+  const formData = new FormData();
+  formData.append("type", "logs");
+  formData.append("logs", JSON.stringify(newLogs));
 
-    return fetch("https://script.google.com/macros/s/AKfycbzYpou1mRPjxW6fKNViOQgmxT3GFkvn8xVGQjlO3bOEf5grRjLStMNjQjA91ggc8BvY/exec", {
-      method: "POST",
-      body: formData
-    });
-  }));
+  await fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
+    method: "POST",
+    body: formData
+  });
 
   setTimeout(() => loadFromSheet(), 1500);
 }
