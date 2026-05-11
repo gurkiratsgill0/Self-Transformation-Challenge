@@ -522,7 +522,9 @@ search: "",
 
   const note = document.getElementById("note")?.value || "";
 
-  state.selectedTasks.forEach(task => {
+  const tasksToSubmit = [...state.selectedTasks];
+
+tasksToSubmit.forEach(task => {
     const formData = new FormData();
     formData.append("team", currentTeam().name);
     formData.append("member", state.selectedMember);
@@ -537,7 +539,9 @@ search: "",
     });
   });
   // instant UI update (fake it locally first)
-state.selectedTasks.forEach(task => {
+const tasksToSubmit = [...state.selectedTasks];
+
+tasksToSubmit.forEach(task => {
   state.logs.push({
     id: Date.now(),
     teamId: currentTeam().id,
