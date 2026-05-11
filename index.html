@@ -355,11 +355,17 @@ table {
     const tasks = [
   ["Exercise for 45 mins", 2],
   ["HKL pledge", 2],
-  ["Nitnem or Japji Sahib", 2],
   ["Sit with yourself for 10 mins", 3],
   ["Write grateful + befqoofia", 2],
   ["Morning Simran", 5],
   ["Listen to Bachans and take notes", 4],
+  ["Japji Sahib", 1],
+["Jaap Sahib", 1],
+["Tav Parsad Savaiyee", 1],
+["Chaupai Sahib", 1],
+["Anand Sahib", 1],
+["Reharas Sahib", 1],
+["Kirtan Sohila", 1],
   ["HKL signup", 4],
   ["Bring someone new to an HKL club event", 5],
   ["General kindness acts", 5],
@@ -417,16 +423,32 @@ search: "",
       return name.split(" ").map(x => x[0]).join("").slice(0,2).toUpperCase();
     }
 
-    function getStreak(member, taskName) {
-      const dates = new Set(state.logs.filter(l => l.member === member && l.task === taskName).map(l => l.date));
-      let streak = 0;
-      const d = new Date(today() + "T00:00:00");
-      while (dates.has(d.toISOString().slice(0,10))) {
-        streak++;
-        d.setDate(d.getDate() - 1);
-      }
-      return streak;
-    }
+    function getStreak(member, taskNames) {
+  const names = Array.isArray(taskNames) ? taskNames : [taskNames];
+
+  const hasAllTasksOnDate = (date) => {
+    const completed = new Set(
+      state.logs
+        .filter(l =>
+          String(l.member).trim() === String(member).trim() &&
+          l.date === date
+        )
+        .map(l => l.task)
+    );
+
+    return names.every(name => completed.has(name));
+  };
+
+  let streak = 0;
+  const d = new Date(today() + "T00:00:00");
+
+  while (hasAllTasksOnDate(d.toISOString().slice(0,10))) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+
+  return streak;
+}
 
     function memberStats() {
   return state.teams.flatMap(team => {
@@ -452,7 +474,15 @@ search: "",
         today: logs.filter(l => l.date === today()).reduce((s,l) => s + l.points, 0),
 
         exercise: getStreak(member, "Exercise for 45 mins"),
-        nitnem: getStreak(member, "Nitnem or Japji Sahib"),
+        nitnem: getStreak(member, [
+  "Japji Sahib",
+  "Jaap Sahib",
+  "Tav Parsad Savaiyee",
+  "Chaupai Sahib",
+  "Anand Sahib",
+  "Reharas Sahib",
+  "Kirtan Sohila"
+]),
         simran: getStreak(member, "Morning Simran"),
         bachans: getStreak(member, "Listen to Bachans and take notes"),
       };
@@ -744,11 +774,17 @@ const bachansLeader = [...ms].sort((a,b) => b.bachans - a.bachans)[0];
   const icons = {
   "Exercise for 45 mins": "dumbbell",
   "HKL pledge": "sparkles",
-  "Nitnem or Japji Sahib": "book",
   "Sit with yourself for 10 mins": "brain",
   "Write grateful + befqoofia": "square-pen",
   "Morning Simran": "sun",
   "Listen to Bachans and take notes": "headphones",
+  "Japji Sahib": "book",
+  "Jaap Sahib": "book",
+  "Tav Parsad Savaiyee": "book",
+  "Chaupai Sahib": "book",
+  "Anand Sahib": "book",
+  "Reharas Sahib": "book",
+  "Kirtan Sohila": "book",  
   "HKL signup": "user-plus",
   "Bring someone new to an HKL club event": "users",
   "General kindness acts": "heart-handshake"
